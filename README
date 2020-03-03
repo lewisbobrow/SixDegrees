@@ -1,0 +1,123 @@
+/**************************************************************************
+* Comp 15 Spring 2019 
+* Filename: README
+* Contains: Implementation of the SixDegrees class  
+* Part of: Homework 5 assignment "Graph Traversal" for Comp 15 Spring 2019
+* Author: Lewis Bobrow
+**************************************************************************/
+
+Compile/run: Compile using "make", run executable with "./sixdegrees"
+or "./sixdegrees [filename]". Compile unit test file using "make graphtest",
+run using "./graphtest"
+
+Program Purpose: This homework assignment uses implementations of a linked 
+list, a queue, a stack, an actor object and a graph in the program 
+SixDegrees, a spin-off of the online game Six Degrees of Kevin Bacon. The 
+program uses a Graph data structure comprised of actor vertices to determine
+the shortest path between two actors. Each vertex, or actor, contains the 
+name of the actor and a linked list of the movies that this actor has 
+starred in. If two actors share a movie in their linked list of movies, then
+there is an edge between these actors. The program finds the shortest number
+of edges between one actor and another. 
+
+
+Acknowledgements: I discussed certain functions on this homework (mainly BFS 
+and populate_graph) with Brendan Brennan.
+
+
+Files: 
+
+main.cpp                : main driver of the project. Creates and 'run's an 
+						  instance 
+of SixDegrees 
+Graph.cpp               : graph class with extra helping tools to run DFS
+Graph.h                 : interface of graph class above
+LinkedList.cpp          : simple template linked list class used for DFS
+LinkedList.h            : interface of Linked list class above
+NodeType.h              : interface of Nodetype class (a simple struct used 
+						  in the linked list)
+linked list class)
+Stack.cpp               : simple template stack class used for DFS
+Stack.h                 : interface of Stack class above
+Queue.cpp               : simple template queue class used for DFS
+Queue.h                 : interface of Queue class above
+actors.txt              : sample list of actors and the movies they have been 
+						  in
+test_input.txt          : sample test input for the algorithm
+the_sixdegrees          : reference implementation for students to use as 
+						  reference
+README                  : this file
+TestMain.cpp            : file used to unit test functions 
+
+Data Structures: The graph data structure is advantageous for this project
+because it is very good at finding the shortest path between two vertices,
+which is the main function of the program. Since the graph class is
+initialized to work with a Vertex template, the graph can accept the actor
+class as a vertex. The actor class contains the actor name and linked list of
+movies. The linked list of movies allows the list to grow dynamically, so
+that as movies are being read in from actors.txt, the list of movies can expand
+easily. Stacks and queues are also implemented to allow for operations within
+the graph such as report path and breadth first search (BFS). BFS works by
+creating two queues: primary and neighbors. Using two temporary vertex
+variables, and setting one of them equal to the first vertex in the parameters,
+add this first temporary variable to the back of a queue, and while the second
+parameter vertex is not equal to the the first temporary vertex:
+1. take the front item of the primary queue and add mark it as visited
+2. if this item is equal to the second vertex, then end the search and
+   report the path.
+   		i. push the first parameter vertex onto a stack
+   		ii. push all the marked vertices onto a stack.
+   		iii. get the edge between the top item and the 2nd item
+   		iv. if it exists, print it out
+   		v. pop off the top item
+2. add this vertex's adjacent nodes to the neighbors queue
+3. add the vertexes in the neighbors queue that aren't visited to primary
+4. if primary queue is empty, then there is no path between the two vertexes
+5. add one to the length of the path
+
+Testing:
+	Unit testing: 
+I tested this program by creating an instance of a Graph, an Actor,
+and SixDegrees, and testing the edge cases and base cases of each important
+function within these classes. There was one case that I wasn't able to test,
+and that was when a graph is populated with 0 vertices. The issue is that
+since the vertices array has a size of 0, no vertices can be added, and so
+attempting to call functions such as is_vertex() would result in a seg 
+fault.
+	Bugs:
+I had several bugs in the populate_graph function within the SixDegrees 
+class. I was struggling to come up with a way to read in the first line 
+after an asterisk as the actor's name, and every line until the next 
+asterisk into the movies linked list. I solved this by watching a video on 
+the concept of delimiters (in this case * is the delimiter) where you read 
+into the linked list from the file while a boolean "new word" is false, and 
+if you find the delimiter, then you get the next line, set it equal to the 
+actor name, and set new word to true, restarting the while loop. The other 
+problem that I was having was in BFS. I based my code on what I had written 
+in lab 9, but the difference was that in lab 9, the graph was vectors of 
+places at tufts, which are easy to directly compare. However, when 
+comparing actors, this becomes more challengin, because you have to 
+overload the == and != operators in the actor class to allow for this. My 
+BFS wasn't entering the while loop of while (cur Actor != second Actor 
+parameter), and I discovered that it was because my != operator overload 
+was incorrectly written. 
+
+Questions:
+What did you find challenging in this assignment? 
+	I found populate_graph to give me the most trouble. Populate_graph was
+difficult because it was hard to understand how to read in the first line
+after an asterisk as the actor name, but every other line as part of the movie
+linked list until the next asterisk. Surprisingly enough, I found  BFS to be 
+relatively easy, because I had learned how to do a BFS in lab9.
+
+Which parts of your work are you most proud of, and which
+would you improve if you had more time? 
+	I am most proud of my final solution to populate_graph. I wish I had more
+time to make the actor_array in SixDegrees a dynamic array so that I didn't 
+have to initialize it with 500 indices. Furthermore, I am wondering if
+there is a way to reduce the runtime in populate_graph where I go through
+the actor_array in a double for loop to get the edges between all the vertices.
+
+Did you complete all parts of the assignment successfully? If not, please 
+indicate which parts may be incomplete, and explain how you would solve them.
+I think I completed all parts of the assignment successfully, yes.
